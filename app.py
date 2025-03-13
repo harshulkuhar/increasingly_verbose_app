@@ -9,8 +9,7 @@ st.title("Increasingly Verbose App")
 def init_openai():
     client = OpenAI(
     base_url = "https://models.inference.ai.azure.com",
-    api_key = st.secrets["openai"]["API_KEY"],
-    # api_key = "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"
+    api_key = st.secrets["openai"]["API_KEY"]
     )
     return client
 

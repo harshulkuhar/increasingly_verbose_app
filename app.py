@@ -44,7 +44,7 @@ def call_model(client, text_prompt):
         top_p=1
     )
 
-    # logger.info(f"FROM GPT :: {instruction_exclusion_call.choices[0].message.content}")
+    logger.info(f"FROM GPT :: {instruction_exclusion_call.choices[0].message.content}")
     print(instruction_exclusion_call.choices[0].message.content)
 
     try:

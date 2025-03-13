@@ -8,6 +8,7 @@ import streamlit as st
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 # Configure streamlit app title
+st.set_page_config(page_title="Increasingly Verbose App")
 st.title("Increasingly Verbose App")
 
 

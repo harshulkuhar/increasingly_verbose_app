@@ -37,7 +37,7 @@ def call_model(client, text_prompt):
                 """
             }
         ],
-        model="DeepSeek-V3", # use gpt-4o or DeepSeek-V3
+        model="gpt-4o-mini", # use gpt-4o or DeepSeek-V3
         temperature=1,
         max_tokens=4096,
         top_p=1
@@ -72,7 +72,7 @@ def call_model(client, text_prompt):
                     """,
             }
         ],
-        model="DeepSeek-V3", # use gpt-4o or DeepSeek-V3
+        model="gpt-4o-mini", # use gpt-4o or DeepSeek-V3
         temperature=1,
         max_tokens=4096,
         top_p=1

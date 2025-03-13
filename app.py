@@ -1,8 +1,13 @@
 from openai import OpenAI
 import json
-import re
+import logging
 import streamlit as st
 
+### CONFIGURE OBJECTS
+# Configure the logger
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
+# Configure streamlit app title
 st.title("Increasingly Verbose App")
 
 
@@ -32,12 +37,21 @@ def call_model(client, text_prompt):
                 """
             }
         ],
-        model="gpt-4o-mini", # use gpt-4o or DeepSeek-V3
+        model="DeepSeek-V3", # use gpt-4o or DeepSeek-V3
         temperature=1,
         max_tokens=4096,
         top_p=1
     )
-    parsed_sentence = json.loads(instruction_exclusion_call.choices[0].message.content)['sentence']
+
+    # logger.info(f"FROM GPT :: {instruction_exclusion_call.choices[0].message.content}")
+    print(instruction_exclusion_call.choices[0].message.content)
+
+    try:
+        parsed_sentence = json.loads(instruction_exclusion_call.choices[0].message.content)["sentence"]
+    except json.JSONDecodeError:
+        immediate_response_from_exclusion_call = instruction_exclusion_call.choices[0].message.content
+        processed_response = immediate_response_from_exclusion_call.strip("```json\n").strip("").strip()
+        parsed_sentence = json.loads(processed_response)["sentence"]
 
     verbose_sentence_call = client.chat.completions.create(
         messages=[
@@ -58,7 +72,7 @@ def call_model(client, text_prompt):
                     """,
             }
         ],
-        model="gpt-4o-mini", # use gpt-4o or DeepSeek-V3
+        model="DeepSeek-V3", # use gpt-4o or DeepSeek-V3
         temperature=1,
         max_tokens=4096,
         top_p=1
@@ -83,5 +97,3 @@ if st.button("Get Response"):
             st.write(response)
     else:
         st.warning("Please enter a sentence before clicking the button.")
-
-

@@ -1,4 +1,4 @@
-from openai import OpenAI
+import openai
 import json
 import logging
 import streamlit as st
@@ -13,7 +13,7 @@ st.title("Increasingly Verbose App")
 
 
 def init_openai():
-    client = OpenAI(
+    client = openai.OpenAI(
         api_key = st.secrets["openai"]["API_KEY"]
     )
     return client
@@ -91,8 +91,12 @@ user_input = st.text_area("Write something to make it verbose :")
 if st.button("Get Response"):
     if user_input.strip():  # Ensure it's not empty
         with st.spinner("Thinking..."):
-            filtered_sentence = exclude_instruction(client= llm_client, text_prompt= user_input)
-            verbose_sentence = make_verbose(client= llm_client, parsed_sentence= filtered_sentence)
+            try:
+                filtered_sentence = exclude_instruction(client= llm_client, text_prompt= user_input)
+                verbose_sentence = make_verbose(client= llm_client, parsed_sentence= filtered_sentence)
+            except openai.OpenAIError as e:
+                logger.critical(f"Code failed somewhere :: {e}")
+                verbose_sentence = "Seems like an issue on OpenAI's side. Please try again after a while."
             st.subheader("Response:")
             st.write(verbose_sentence)
     else:

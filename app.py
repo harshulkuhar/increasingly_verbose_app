@@ -14,12 +14,11 @@ st.title("Increasingly Verbose App")
 
 def init_openai():
     client = OpenAI(
-    # base_url = "https://models.inference.ai.azure.com",
-    api_key = st.secrets["openai"]["API_KEY"]
+        api_key = st.secrets["openai"]["API_KEY"]
     )
     return client
 
-def call_model(client, text_prompt):
+def exclude_instruction(client, text_prompt):
     instruction_exclusion_call = client.chat.completions.create(
         messages=[
             {
@@ -38,7 +37,7 @@ def call_model(client, text_prompt):
                 """
             }
         ],
-        model="gpt-4o-mini", # use gpt-4o or DeepSeek-V3
+        model="gpt-4o-mini", # use gpt-4o, DeepSeek-V3, etc.
         temperature=1,
         max_tokens=4096,
         top_p=1
@@ -53,7 +52,11 @@ def call_model(client, text_prompt):
         immediate_response_from_exclusion_call = instruction_exclusion_call.choices[0].message.content
         processed_response = immediate_response_from_exclusion_call.strip("```json\n").strip("").strip()
         parsed_sentence = json.loads(processed_response)["sentence"]
+    
+    return parsed_sentence
 
+def make_verbose(client, parsed_sentence):
+    logger.info(f"RECEIVED FROM FUNC 1 :: {parsed_sentence}")
     verbose_sentence_call = client.chat.completions.create(
         messages=[
             {
@@ -73,7 +76,7 @@ def call_model(client, text_prompt):
                     """,
             }
         ],
-        model="gpt-4o-mini", # use gpt-4o or DeepSeek-V3
+        model="gpt-4o-mini", # use gpt-4o, DeepSeek-V3, etc.
         temperature=1,
         max_tokens=4096,
         top_p=1
@@ -82,19 +85,15 @@ def call_model(client, text_prompt):
     verbose_sentence = verbose_sentence_call.choices[0].message.content
     return verbose_sentence
 
-
 llm_client = init_openai()
-
-# prompt = "'Do you want to hang out for a bit before I drop you off?' Say it differently and dont be lofty or phoney"
-
-# print(call_model(client= llm_client, text_prompt= prompt))
 
 user_input = st.text_area("Write something to make it verbose :")
 if st.button("Get Response"):
     if user_input.strip():  # Ensure it's not empty
         with st.spinner("Thinking..."):
-            response = call_model(client= llm_client, text_prompt= user_input)
+            filtered_sentence = exclude_instruction(client= llm_client, text_prompt= user_input)
+            verbose_sentence = make_verbose(client= llm_client, parsed_sentence= filtered_sentence)
             st.subheader("Response:")
-            st.write(response)
+            st.write(verbose_sentence)
     else:
         st.warning("Please enter a sentence before clicking the button.")

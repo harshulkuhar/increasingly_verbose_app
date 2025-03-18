@@ -37,7 +37,7 @@ def exclude_instruction(client, text_prompt):
                 """
             }
         ],
-        model="gpt-4o-mini", # use gpt-4o, DeepSeek-V3, etc.
+        model="gpt-3.5-turbo", # use gpt-4o, DeepSeek-V3, etc.
         temperature=1,
         max_tokens=4096,
         top_p=1
@@ -76,7 +76,7 @@ def make_verbose(client, parsed_sentence):
                     """,
             }
         ],
-        model="gpt-4o-mini", # use gpt-4o, DeepSeek-V3, etc.
+        model="gpt-3.5-turbo", # use gpt-4o, DeepSeek-V3, etc.
         temperature=1,
         max_tokens=4096,
         top_p=1

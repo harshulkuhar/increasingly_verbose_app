@@ -1,6 +1,7 @@
 # Increasingly Verbose App
 
-A fun application that takes a sentence and generates increasingly verbose versions of it using GPT. Built with Streamlit and OpenAI's API.
+Transform simple sentences into more elaborate expressions using Generative AI. Inspired by Reddit.
+
 
 ## Prerequisites
 
@@ -40,6 +41,7 @@ The app will open in your default web browser. Simply:
 ## Examples
 
 Original: "The cat sat."
+
 Result: "The domesticated mammal of the species Felis catus assumed a position wherein its posterior was placed upon a surface."
 
 ## Acknowledgements

@@ -18,7 +18,7 @@ class CacheEntry:
     timestamp: datetime
 
 class CacheManager:
-    def __init__(self, similarity_threshold: float = 0.85):
+    def __init__(self, similarity_threshold: float = 0.71):
         self._cache: Dict[str, CacheEntry] = {}
         self._model = SentenceTransformer('all-MiniLM-L6-v2')
         self._similarity_threshold = similarity_threshold

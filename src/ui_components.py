@@ -36,8 +36,23 @@ def handle_response(llm_client, user_input):
     if user_input.strip():  # Ensure it's not empty
         with st.spinner("Thinking..."):
             try:
-                filtered_sentence = gpt_utils.exclude_instruction(client=llm_client, text_prompt=user_input)
-                verbose_sentence = gpt_utils.make_verbose(client=llm_client, parsed_sentence=filtered_sentence, original_text=user_input)
+                # First cache check with original text
+                cached = gpt_utils._cache_manager.get_cached_response(user_input)
+                if cached:
+                    logger.info("Cache hit! Returning cached response ..")
+                    verbose_sentence = cached[1]
+                else:
+                    # If no cache hit, get filtered sentence
+                    filtered_sentence = gpt_utils.exclude_instruction(client=llm_client, text_prompt=user_input)
+                    
+                    # Second cache check with filtered sentence
+                    cached = gpt_utils._cache_manager.get_cached_response(filtered_sentence)
+                    if cached:
+                        logger.info("Cache hit after parsing! Returning cached response ..")
+                        verbose_sentence = cached[1]
+                    else:
+                        # If still no cache hit, proceed with make_verbose
+                        verbose_sentence = gpt_utils.make_verbose(client=llm_client, parsed_sentence=filtered_sentence, original_text=user_input)
             except openai.OpenAIError as e:
                 logger.critical(f"Code failed somewhere :: {e}")
                 verbose_sentence = "Seems like an issue on OpenAI's side. Please try again after a while."

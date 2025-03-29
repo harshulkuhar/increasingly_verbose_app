@@ -5,7 +5,7 @@ Transform simple sentences into more elaborate expressions using Generative AI. 
 
 ## Prerequisites
 
-- Python 3.11+
+- Python 3.9+
 - OpenAI API key
 
 ## Installation

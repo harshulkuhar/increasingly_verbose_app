@@ -1,2 +1,8 @@
 .streamlit/
 increasingly_verbose_app.code-workspace
+# Python bytecode
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python

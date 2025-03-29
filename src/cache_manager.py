@@ -10,6 +10,11 @@ torch.classes.__path__ = []
 
 logger = logging.getLogger(__name__)
 
+# Pre-load the model at module level
+logger.info("Loading sentence transformer model...")
+MODEL = SentenceTransformer('all-MiniLM-L6-v2')
+logger.info("Sentence transformer model loaded successfully!")
+
 @dataclass
 class CacheEntry:
     filtered_sentence: str
@@ -20,12 +25,11 @@ class CacheEntry:
 class CacheManager:
     def __init__(self, similarity_threshold: float = 0.71):
         self._cache: Dict[str, CacheEntry] = {}
-        self._model = SentenceTransformer('all-MiniLM-L6-v2')
         self._similarity_threshold = similarity_threshold
     
     def _get_embedding(self, text: str) -> np.ndarray:
         """Generate embedding for the input text"""
-        return self._model.encode(text, convert_to_numpy=True)
+        return MODEL.encode(text, convert_to_numpy=True)
     
     def _cosine_similarity(self, emb1: np.ndarray, emb2: np.ndarray) -> float:
         """Calculate cosine similarity between two embeddings"""

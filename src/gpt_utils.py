@@ -44,7 +44,6 @@ def exclude_instruction(client, text_prompt):
     )
 
     logger.info(f"FROM GPT :: {instruction_exclusion_call.choices[0].message.content}")
-    print(instruction_exclusion_call.choices[0].message.content)
 
     try:
         parsed_sentence = json.loads(instruction_exclusion_call.choices[0].message.content)["sentence"]
@@ -55,8 +54,8 @@ def exclude_instruction(client, text_prompt):
     
     return parsed_sentence
 
-def make_verbose(client, parsed_sentence):
-    cached = _cache_manager.get_cached_response(parsed_sentence)
+def make_verbose(client, parsed_sentence, original_text):
+    cached = _cache_manager.get_cached_response(original_text)
     if cached:
         logger.info("Cache hit! Returning cached response")
         return cached[1]
@@ -88,5 +87,5 @@ def make_verbose(client, parsed_sentence):
     )
     
     verbose_sentence = verbose_sentence_call.choices[0].message.content
-    _cache_manager.cache_response(parsed_sentence, parsed_sentence, verbose_sentence)
+    _cache_manager.cache_response(original_text, parsed_sentence, verbose_sentence)
     return verbose_sentence

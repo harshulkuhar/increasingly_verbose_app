@@ -37,7 +37,7 @@ def handle_response(llm_client, user_input):
         with st.spinner("Thinking..."):
             try:
                 filtered_sentence = gpt_utils.exclude_instruction(client=llm_client, text_prompt=user_input)
-                verbose_sentence = gpt_utils.make_verbose(client=llm_client, parsed_sentence=filtered_sentence)
+                verbose_sentence = gpt_utils.make_verbose(client=llm_client, parsed_sentence=filtered_sentence, original_text=user_input)
             except openai.OpenAIError as e:
                 logger.critical(f"Code failed somewhere :: {e}")
                 verbose_sentence = "Seems like an issue on OpenAI's side. Please try again after a while."

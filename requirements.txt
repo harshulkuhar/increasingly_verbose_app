@@ -1,2 +1,4 @@
 openai==1.66.3
 streamlit==1.43.2
+sentence-transformers==2.5.1
+numpy==1.26.4

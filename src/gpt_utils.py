@@ -2,8 +2,10 @@ import openai
 import json
 import logging
 import streamlit as st
+from .cache_manager import CacheManager
 
 logger = logging.getLogger(__name__)
+_cache_manager = CacheManager()
 
 def init_openai():
     client = openai.OpenAI(
@@ -12,6 +14,11 @@ def init_openai():
     return client
 
 def exclude_instruction(client, text_prompt):
+    cached = _cache_manager.get_cached_response(text_prompt)
+    if cached:
+        logger.info("Returning cached response..")
+        return cached[0]
+
     instruction_exclusion_call = client.chat.completions.create(
         messages=[
             {
@@ -37,7 +44,6 @@ def exclude_instruction(client, text_prompt):
     )
 
     logger.info(f"FROM GPT :: {instruction_exclusion_call.choices[0].message.content}")
-    print(instruction_exclusion_call.choices[0].message.content)
 
     try:
         parsed_sentence = json.loads(instruction_exclusion_call.choices[0].message.content)["sentence"]
@@ -48,7 +54,12 @@ def exclude_instruction(client, text_prompt):
     
     return parsed_sentence
 
-def make_verbose(client, parsed_sentence):
+def make_verbose(client, parsed_sentence, original_text):
+    cached = _cache_manager.get_cached_response(original_text)
+    if cached:
+        logger.info("Cache hit! Returning cached response")
+        return cached[1]
+
     logger.info(f"RECEIVED FROM FUNC 1 :: {parsed_sentence}")
     verbose_sentence_call = client.chat.completions.create(
         messages=[
@@ -76,4 +87,5 @@ def make_verbose(client, parsed_sentence):
     )
     
     verbose_sentence = verbose_sentence_call.choices[0].message.content
+    _cache_manager.cache_response(original_text, parsed_sentence, verbose_sentence)
     return verbose_sentence

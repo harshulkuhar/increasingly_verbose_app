@@ -38,12 +38,12 @@ class CacheManager:
         for cached_text, entry in self._cache.items():
             similarity = self._cosine_similarity(input_embedding, entry.embedding)
             if similarity >= self._similarity_threshold:
-                logger.info(f"""\
-                            Found semantically similar cached response ::\n
-                                input: {input_text[:50]}...\n
-                                cached: {cached_text[:50]}...\n
-                                similarity: {similarity:.2f}
-""")
+                logger.info(f"""
+                    Found semantically similar cached response ::
+                        Input :: {input_text[:50]}...
+                        Cache :: {cached_text[:50]}...
+                        Similarity :: {similarity:.2f}
+                    """)
                 return entry.filtered_sentence, entry.verbose_response
         
         return None

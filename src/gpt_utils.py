@@ -16,7 +16,7 @@ def init_openai():
 def exclude_instruction(client, text_prompt):
     cached = _cache_manager.get_cached_response(text_prompt)
     if cached:
-        logger.info("Cache hit! Returning cached response")
+        logger.info("Returning cached response..")
         return cached[0]
 
     instruction_exclusion_call = client.chat.completions.create(
